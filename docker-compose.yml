@@ -16,3 +16,32 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: rag-postgres
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: rag
+      POSTGRES_PASSWORD: rag
+      POSTGRES_DB: rag
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  minio:
+    image: cgr.dev/chainguard/minio:latest
+    container_name: rag-minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    environment:
+      MINIO_ROOT_USER: raguser
+      MINIO_ROOT_PASSWORD: ragpassword123
+    volumes:
+      - miniodata:/data
+
+volumes:
+  pgdata:
+  miniodata:
